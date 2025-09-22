@@ -80,6 +80,30 @@
           file_put_contents($arquivo, "$enunciado;Multipla Escolha;$opcao1;$opcao2;$opcao3;$opcao4;$opcaocerta\n", FILE_APPEND);
           $mensagem = "<p style='color: green;'>Pergunta de múltipla escolha salva com sucesso!</p>";
       }
+
+      if ($acao == "apagar"){
+            $enunciadoApag = $_POST['enunciadoapag'];
+            $linhas = file($arquivo);
+            $novaLista = "";
+            foreach($linhas as $i => $linha){
+                if($i == 0) { //mantem o cabeçalho
+                    $novaLista .= $linha;
+                    continue; 
+                }
+                $colunas = explode(';', $linha);
+                $enunciadoLinha = trim($colunas[0]);//explode a linha dividindo com os ponto e virgula. 
+                
+                //se o enunciado for o desejado pra apagar, ignora ele da nova lista
+                if ($enunciadoLinha == $enunciadoApag) {
+                    continue;
+                } else {
+                    $novaLista .= $linha;
+                }
+            }
+            file_put_contents($arquivo, $novaLista);
+            echo "<p style='color:red;'>Pergunta apagada!</p>";
+        }
+
   }
 
   echo $mensagem;
