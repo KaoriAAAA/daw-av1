@@ -54,12 +54,27 @@
               <hr>
               ";
           } else {
-              if (!file_exists($arquivo)) {
-                  file_put_contents($arquivo, "enunciado;tipo;opcao A;opcao B;opcao C;opcao D;opcaocerta\n");
-              }
+                if (!file_exists($arquivo)) {
+                    file_put_contents($arquivo, "enunciado;tipo;opcao A;opcao B;opcao C;opcao D;opcaocerta\n");
+                }
 
-              file_put_contents($arquivo, "$enunciado;Discursiva;;;;;;\n", FILE_APPEND);
-              $mensagem = "<p style='color: green;'>Pergunta discursiva salva com sucesso!</p>";
+                $linhas = file($arquivo);
+                $existe = false;
+                foreach ($linhas as $linha) {
+                    $colunas = explode(';', trim($linha));
+                    if (trim($colunas[0]) == trim($enunciado)) {
+                        $existe = true;
+                        break;
+                    }
+                }
+
+                if (!$existe) {
+                    file_put_contents($arquivo, "$enunciado;Discursiva;;;;;;\n", FILE_APPEND);
+                    $mensagem = "<p style='color: green;'>Pergunta discursiva salva com sucesso!</p>";
+                } else {
+                    $mensagem = "<p style='color: orange;'>Essa pergunta já existe!</p>";
+                }
+
           }
       }
 
@@ -73,15 +88,33 @@
           $opcao4 = $_POST["opcao4"];
           $opcaocerta = $_POST["opcaocerta"];
 
-          if (!file_exists($arquivo)) {
-              file_put_contents($arquivo, "enunciado;tipo;opcao A;opcao B;opcao C;opcao D;opcaocerta\n");
-          }
+          
 
-          file_put_contents($arquivo, "$enunciado;Multipla Escolha;$opcao1;$opcao2;$opcao3;$opcao4;$opcaocerta\n", FILE_APPEND);
-          $mensagem = "<p style='color: green;'>Pergunta de múltipla escolha salva com sucesso!</p>";
+          if (!file_exists($arquivo)) {
+                file_put_contents($arquivo, "enunciado;tipo;opcao A;opcao B;opcao C;opcao D;opcaocerta\n");
+            }
+
+            $linhas = file($arquivo);
+            $existe = false;
+            foreach ($linhas as $linha) {
+                $colunas = explode(';', trim($linha));
+                if (trim($colunas[0]) == trim($enunciado)) {
+                    $existe = true;
+                    break;
+                }
+            }
+
+            if (!$existe) {
+                file_put_contents($arquivo, "$enunciado;Multipla Escolha;$opcao1;$opcao2;$opcao3;$opcao4;$opcaocerta\n", FILE_APPEND);
+                $mensagem = "<p style='color: green;'>Pergunta de múltipla escolha salva com sucesso!</p>";
+
+            } else {
+                $mensagem = "<p style='color: orange;'>Essa pergunta já existe!</p>";
+            }
       }
 
-      if ($acao == "apagar"){
+
+      if ($acao == "apagar") {
             $enunciadoApag = $_POST['enunciadoapag'];
             $linhas = file($arquivo);
             $novaLista = "";
@@ -104,6 +137,36 @@
             echo "<p style='color:red;'>Pergunta apagada!</p>";
         }
 
+        if ($acao == "listartodas") {
+            $linhas = file($arquivo);
+
+            echo "<table>";
+            echo "
+                <tr>
+                    <th>Enunciado</th><th>Tipo</th><th>Opções</th><th>Opção Certa</th>
+                </tr>
+            ";
+
+            foreach($linhas as $i => $linha) {
+                if($i == 0) { //mantem o cabeçalho
+                    continue; 
+                }
+                $colunas = explode(';', $linha);
+
+                if(count($colunas) < 7) {continue;}
+                if($colunas[1] == "Discursiva") {
+                    $colunas[2] = $colunas[3] = $colunas[4] = $colunas[5] = $colunas[6] = "N/A";
+                }
+                echo "
+                        <tr>
+                            <td>$colunas[0]</td><td>$colunas[1]</td><td>$colunas[2] $colunas[3] $colunas[4] $colunas[5]</td><td>$colunas[6]</td>
+                        </tr>
+                ";
+                
+            }
+            echo "</table><br><br>";
+        }
+
   }
 
   echo $mensagem;
@@ -124,6 +187,7 @@
       <input type="submit" value="Continuar">
   </form>
   <hr>
+
   <h3>Apagar Pergunta</h3>
   <form method="POST">
       <input type="hidden" name="acao" value="apagar">
@@ -132,6 +196,17 @@
       <br><br>
 
       <input type="submit" value="Continuar">
+  </form>
+  <hr>
+  <p>Ferramentas</p>
+  <form method="POST">
+      <input type="hidden" name="acao" value="listartodas">
+      <input type="submit" value="Listar todas as perguntas e respostas">
+  </form>
+
+  <form method="POST">
+      <input type="hidden" name="acao" value="listaruma">
+      <input type="submit" value="Listar uma pergunta">
   </form>
 
 </body>
