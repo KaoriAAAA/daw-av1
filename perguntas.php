@@ -148,7 +148,7 @@
             ";
 
             foreach($linhas as $i => $linha) {
-                if($i == 0) { //mantem o cabeçalho
+                if($i == 0) { //ignora o cabeçalho
                     continue; 
                 }
                 $colunas = explode(';', $linha);
@@ -167,6 +167,38 @@
             echo "</table><br><br>";
         }
 
+        if ($acao == "listaruma") {
+            $listar1 = $_POST["listar1"];
+            $linhas = file($arquivo);
+
+            echo "<table>";
+            echo "
+                <tr>
+                    <th>Enunciado</th><th>Tipo</th><th>Opções</th><th>Opção Certa</th>
+                </tr>
+            ";
+
+            foreach($linhas as $i => $linha) {
+                if($i == 0) { //ignora o cabeçalho
+                    continue; 
+                }
+                $colunas = explode(';', $linha);
+
+                if(count($colunas) < 7) {continue;}
+                if($colunas[1] == "Discursiva") {
+                    $colunas[2] = $colunas[3] = $colunas[4] = $colunas[5] = $colunas[6] = "N/A";
+                }
+                if($colunas[0] == $listar1) {
+                    echo "
+                        <tr>
+                            <td>$colunas[0]</td><td>$colunas[1]</td><td>$colunas[2] $colunas[3] $colunas[4] $colunas[5]</td><td>$colunas[6]</td>
+                        </tr>
+                    ";
+                }
+                
+            }
+            echo "</table><br><br>";
+        }
   }
 
   echo $mensagem;
@@ -201,11 +233,13 @@
   <p>Ferramentas</p>
   <form method="POST">
       <input type="hidden" name="acao" value="listartodas">
-      <input type="submit" value="Listar todas as perguntas e respostas">
+      <input type="submit" value="Listar todas as perguntas e respostas"><br><br>
   </form>
 
   <form method="POST">
       <input type="hidden" name="acao" value="listaruma">
+      <label for="listar1">Enunciado da pergunta a ser listada:</label><br>
+      <input type="text" id="listar1" name="listar1" required>
       <input type="submit" value="Listar uma pergunta">
   </form>
 
