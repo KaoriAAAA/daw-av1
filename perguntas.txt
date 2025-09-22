@@ -1,0 +1,6 @@
+enunciado;tipo;opcao A);opcao B);opcao C);opcao D);opcaocerta
+
+
+cy;Multipla Escolha;ba;be;bi;bo;a)
+andre 2;Multipla Escolha;ca;ce;ci;ANDREd;d)
+andre 2;Multipla Escolha;ca;ce;ci;ANDREd;d)
