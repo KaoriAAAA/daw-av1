@@ -1,0 +1,27 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+nav a {
+  margin-right: 10px;
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+}
+.hidden {
+  display: none;
+}
+.error {
+  color: red;
+}
+.success {
+  color: green;
+}
+.question-box {
+  border: 1px solid #ccc;
+  padding: 8px;
+  margin: 6px 0;
+}
+button {
+  margin-top: 4px;
+}
