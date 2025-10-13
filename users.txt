@@ -1,2 +1,3 @@
 username;password_hash;role;nome
-admin;$2y$10$PeCnbxa/hOTpxVkLmoraouO8ALp7qIr2UdEv2gHYl3VJZzLZWu3de;admin;Administrador
+admin;$2y$10$Uk/psr.0jLNeU9z.R5a0OOArrCQrzUB5gR9UyIBdYDvIAxNfvsCQC;admin;Administrador
+K;$2y$10$.NyQ.WyC2GqY6A6pVjXYtufcTJziFOQMd46hSNUEljlxvOzp6Yh1i;funcionario;Ka
