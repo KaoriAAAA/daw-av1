@@ -1,0 +1,2 @@
+username;password_hash;role;nome
+admin;$2y$10$PeCnbxa/hOTpxVkLmoraouO8ALp7qIr2UdEv2gHYl3VJZzLZWu3de;admin;Administrador
