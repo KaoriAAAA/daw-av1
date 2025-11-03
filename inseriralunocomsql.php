@@ -70,5 +70,22 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
     echo json_encode($alunos);
 }
 
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['action'] == 'read_one' && isset($_GET['matricula'])) {
+    $matricula = $_GET['matricula'];
+
+    $stmt = $conn->prepare("SELECT matricula, nome, email FROM alunos WHERE matricula = ?");
+    $stmt->bind_param("s", $matricula);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $aluno = $result->fetch_assoc();
+
+    header('Content-Type: application/json');
+    echo json_encode($aluno);
+
+    $stmt->close();
+}
+
+
 $conn->close();
 ?>

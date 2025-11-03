@@ -36,6 +36,24 @@
         <button onclick="updateAluno()">Atualizar</button>
     </div>
 
+    <h2>Buscar Aluno por Matrícula</h2>
+<div>
+    <input type="text" id="searchMatricula" placeholder="Digite a matrícula">
+    <button onclick="buscarAluno()">Buscar</button>
+</div>
+
+<table id="tabelaAlunoBusca" border="1" style="margin-top:10px;">
+    <thead>
+        <tr>
+            <th>Matrícula</th>
+            <th>Nome</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+
     <script>
         const phpUrl = "inseriralunocomsql.php";
 
@@ -111,6 +129,35 @@
                     alert(res);
                     listarAlunos();
                 });
+        }
+
+            function buscarAluno() {
+        const matricula = document.getElementById("searchMatricula").value;
+
+        if (!matricula) {
+            alert("Digite uma matrícula para buscar.");
+            return;
+        }
+
+        fetch(`${phpUrl}?action=read_one&matricula=${encodeURIComponent(matricula)}`)
+            .then(res => res.json())
+            .then(aluno => {
+                const tbody = document.querySelector("#tabelaAlunoBusca tbody");
+                tbody.innerHTML = "";
+
+                if (!aluno) {
+                    tbody.innerHTML = `<tr><td colspan="3">Aluno não encontrado.</td></tr>`;
+                    return;
+                }
+
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${aluno.matricula}</td>
+                    <td>${aluno.nome}</td>
+                    <td>${aluno.email}</td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
 
         window.onload = listarAlunos;
