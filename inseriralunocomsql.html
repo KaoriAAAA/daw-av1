@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>CRUD de Alunos</title>
+</head>
+<body>
+    <h1>CRUD de Alunos</h1>
+
+    <h2>Adicionar Aluno</h2>
+    <div>
+        <input type="text" id="matricula" placeholder="Matrícula">
+        <input type="text" id="nome" placeholder="Nome">
+        <input type="email" id="email" placeholder="Email">
+        <button onclick="createAluno()">Cadastrar</button>
+    </div>
+
+    <h2>Lista de Alunos</h2>
+    <table id="tabelaAlunos" border="1">
+        <thead>
+            <tr>
+                <th>Matrícula</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <h2>Atualizar Aluno</h2>
+    <div>
+        <input type="text" id="updateMatricula" placeholder="Matrícula do aluno">
+        <input type="text" id="updateNome" placeholder="Novo Nome">
+        <input type="email" id="updateEmail" placeholder="Novo Email">
+        <button onclick="updateAluno()">Atualizar</button>
+    </div>
+
+    <script>
+        const phpUrl = "inseriralunocomsql.php";
+
+        function createAluno() {
+            const matricula = document.getElementById("matricula").value;
+            const nome = document.getElementById("nome").value;
+            const email = document.getElementById("email").value;
+
+            const formData = new FormData();
+            formData.append("action", "create");
+            formData.append("matricula", matricula);
+            formData.append("nome", nome);
+            formData.append("email", email);
+
+            fetch(phpUrl, { method: "POST", body: formData })
+                .then(res => res.text())
+                .then(res => {
+                    alert(res);
+                    listarAlunos();
+                });
+        }
+
+        function listarAlunos() {
+            fetch(`${phpUrl}?action=read`)
+                .then(res => res.json())
+                .then(alunos => {
+                    const tbody = document.querySelector("#tabelaAlunos tbody");
+                    tbody.innerHTML = "";
+                    alunos.forEach(aluno => {
+                        const tr = document.createElement("tr");
+                        tr.innerHTML = `
+                            <td>${aluno.matricula}</td>
+                            <td>${aluno.nome}</td>
+                            <td>${aluno.email}</td>
+                            <td>
+                                <button onclick="deleteAluno('${aluno.matricula}')">Deletar</button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                });
+        }
+
+        function updateAluno() {
+            const matricula = document.getElementById("updateMatricula").value;
+            const nome = document.getElementById("updateNome").value;
+            const email = document.getElementById("updateEmail").value;
+
+            const formData = new FormData();
+            formData.append("action", "update");
+            formData.append("matricula", matricula);
+            formData.append("nome", nome);
+            formData.append("email", email);
+
+            fetch(phpUrl, { method: "POST", body: formData })
+                .then(res => res.text())
+                .then(res => {
+                    alert(res);
+                    listarAlunos();
+                });
+        }
+
+        function deleteAluno(matricula) {
+            if (!confirm("Tem certeza que deseja deletar este aluno?")) return;
+
+            const formData = new FormData();
+            formData.append("action", "delete");
+            formData.append("matricula", matricula);
+
+            fetch(phpUrl, { method: "POST", body: formData })
+                .then(res => res.text())
+                .then(res => {
+                    alert(res);
+                    listarAlunos();
+                });
+        }
+
+        window.onload = listarAlunos;
+    </script>
+</body>
+</html>
